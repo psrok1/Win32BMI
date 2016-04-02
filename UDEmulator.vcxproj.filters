@@ -17,6 +17,9 @@
       <UniqueIdentifier>{8E41214B-6785-4CFE-B992-037D68949A14}</UniqueIdentifier>
       <Extensions>inf;inv;inx;mof;mc;</Extensions>
     </Filter>
+    <Filter Include="Source Files\Emulators">
+      <UniqueIdentifier>{7d2457e5-c927-486a-b448-d25b266847b5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Inf Include="UDEmulator.inf">
@@ -30,9 +33,42 @@
     <ClCompile Include="Handlers.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Parser.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="POPCNT.c">
+      <Filter>Source Files\Emulators</Filter>
+    </ClCompile>
+    <ClCompile Include="LZCNT.c">
+      <Filter>Source Files\Emulators</Filter>
+    </ClCompile>
+    <ClCompile Include="ANDN.c">
+      <Filter>Source Files\Emulators</Filter>
+    </ClCompile>
+    <ClCompile Include="BEXTR.c">
+      <Filter>Source Files\Emulators</Filter>
+    </ClCompile>
+    <ClCompile Include="BLSI.c">
+      <Filter>Source Files\Emulators</Filter>
+    </ClCompile>
+    <ClCompile Include="BLSMSK.c">
+      <Filter>Source Files\Emulators</Filter>
+    </ClCompile>
+    <ClCompile Include="BLSR.c">
+      <Filter>Source Files\Emulators</Filter>
+    </ClCompile>
+    <ClCompile Include="TZCNT.c">
+      <Filter>Source Files\Emulators</Filter>
+    </ClCompile>
+    <ClCompile Include="Example.c">
+      <Filter>Source Files\Emulators</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Driver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Parser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

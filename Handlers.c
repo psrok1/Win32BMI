@@ -1,18 +1,26 @@
 #include "Driver.h"
 
-int __stdcall UD2InstructionHandler(
-	char** instruction,		   // bytes of instruction
-	CALLER_CONTEXT* context)   // caller context 
-{
-	if ((*instruction)[0] == 0x0F && (*instruction)[1] == 0x0B) {
-		context->ecx = 0xFACEFEED;  // ... ECX
-		(*instruction) += 2;		// set EIP to next instruction
-		return TRUE;				// handled!
-	} else
-		return FALSE; // not UD2 -> not handled
-}
+/* External references to instruction emulators */
+
+extern EMULATOR_ROUTINE(ANDNInstructionHandler);
+extern EMULATOR_ROUTINE(BEXTRInstructionHandler);
+extern EMULATOR_ROUTINE(BLSIInstructionHandler);
+extern EMULATOR_ROUTINE(BLSMSKInstructionHandler);
+extern EMULATOR_ROUTINE(BLSRInstructionHandler);
+extern EMULATOR_ROUTINE(LZCNTInstructionHandler);
+extern EMULATOR_ROUTINE(POPCNTInstructionHandler);
+extern EMULATOR_ROUTINE(TZCNTInstructionHandler);
+
+/* UD exception handlers chain */
 
 InstructionHandler handlers_chain[] = {
-	UD2InstructionHandler,
-	NULL // !!! last item must be NULL !!!
+	ANDNInstructionHandler,
+	BEXTRInstructionHandler,
+	BLSIInstructionHandler,
+	BLSMSKInstructionHandler,
+	BLSRInstructionHandler,
+	LZCNTInstructionHandler,
+	POPCNTInstructionHandler,
+	TZCNTInstructionHandler,
+	NULL // !!! last item must be NULL !!! [pass to system routine]
 };

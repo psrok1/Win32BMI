@@ -153,11 +153,22 @@
     <FilesToPackage Include="$(TargetPath)" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ANDN.c" />
+    <ClCompile Include="BEXTR.c" />
+    <ClCompile Include="BLSI.c" />
+    <ClCompile Include="BLSMSK.c" />
+    <ClCompile Include="BLSR.c" />
     <ClCompile Include="Driver.c" />
+    <ClCompile Include="Example.c" />
     <ClCompile Include="Handlers.c" />
+    <ClCompile Include="LZCNT.c" />
+    <ClCompile Include="Parser.c" />
+    <ClCompile Include="POPCNT.c" />
+    <ClCompile Include="TZCNT.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Driver.h" />
+    <ClInclude Include="Parser.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
