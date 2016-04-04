@@ -1,6 +1,7 @@
 #pragma once
 #include <ntddk.h>
 #include <intrin.h>
+#include "Consts.h"
 
 #pragma pack(push,1)
 
@@ -41,15 +42,14 @@ typedef struct
 	UINT32 flags;
 } CALLER_CONTEXT;
 
-// Flags
+extern unsigned int getRegValue(
+	unsigned char src,
+	CALLER_CONTEXT* context);
 
-#define FLAG_CF 0x0001	// Carry
-#define FLAG_PF 0x0004	// Parity
-#define FLAG_AF 0x0010  // Adjust
-#define FLAG_ZF 0x0040  // Zero
-#define FLAG_SF 0x0080  // Sign
-#define FLAG_DF 0x0400  // Direction
-#define FLAG_OF 0x0800  // Overflow
+extern void setRegValue(
+	unsigned char dst,
+	unsigned int value,
+	CALLER_CONTEXT* context);
 
 /***** Handlers.c *****/
 

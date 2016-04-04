@@ -14,11 +14,15 @@ int __stdcall UD2InstructionHandler(
 {
 	if (isUD2(*instruction)) {
 		// Setting GPR registers!
+		// Using getters
+		setRegValue(REG_ECX, 0xFACEFEED, context);
+		setRegValue(REG_EDX, 0x00000000, context);
+		// ... or in structure
 		context->ecx = 0xFACEFEED;
 		context->edx = 0x00000000;
 		context->flags |= FLAG_ZF;
 		// Other registers (SSE), memory etc. need to be set directly!
-		__asm movhlps xmm5, xmm4
+		__asm movhlps xmm5, xmm4;
 		// Move EIP two bytes forward! [instruction length]
 		(*instruction) += 2;
 		// Handled!

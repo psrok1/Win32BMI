@@ -167,6 +167,7 @@
     <ClCompile Include="TZCNT.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Consts.h" />
     <ClInclude Include="Driver.h" />
     <ClInclude Include="Parser.h" />
   </ItemGroup>

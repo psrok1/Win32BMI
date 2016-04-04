@@ -24,3 +24,21 @@ InstructionHandler handlers_chain[] = {
 	TZCNTInstructionHandler,
 	NULL // !!! last item must be NULL !!! [pass to system routine]
 };
+
+/* Helper functions: context getters/setters */
+
+unsigned int getRegValue(unsigned char src, CALLER_CONTEXT* context) 
+{
+	UNREFERENCED_PARAMETER(src);
+	UNREFERENCED_PARAMETER(context);
+	// TODO
+	return 0;
+}
+
+void setRegValue(unsigned char dst, unsigned int value, CALLER_CONTEXT* context) 
+{
+	UNREFERENCED_PARAMETER(dst);
+	UNREFERENCED_PARAMETER(value);
+	UNREFERENCED_PARAMETER(context);
+	// TODO
+}
