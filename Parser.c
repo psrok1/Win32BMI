@@ -1,20 +1,22 @@
 #include "Parser.h"
 
-InstructionArgs parse(char* instruction, unsigned int type)
+ParsedInstruction parse(char* instruction)
 {
-	InstructionArgs instr_args;
+	ParsedInstruction instr_args;
 	// *** During implementation: delete lines below ***
-	instr_args.length = 0;
-	UNREFERENCED_PARAMETER(instruction);
-	UNREFERENCED_PARAMETER(type);
+	if (instruction[0] == 0x0F && instruction[1] == 0x0B)
+	{
+		instr_args.type = INSTR_DEBUG;
+		instr_args.src1 = UNDEF;
+		instr_args.length = 2;
+	}
+	else
+	{
+		instr_args.type = INSTR_UNKNOWN;
+		instr_args.length = 0;
+	}
 	// **** TODO ****
 	return instr_args;
-}
-
-char* getOpcode(char* instruction) {
-	UNREFERENCED_PARAMETER(instruction);
-	// **** TODO ****
-	return instruction;
 }
 
 void* getEffectiveVA(struct MemoryArgument mem, CALLER_CONTEXT* context) {

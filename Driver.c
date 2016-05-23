@@ -44,16 +44,6 @@ __declspec(naked) HookRoutine() {
 		pushfd;
 		pushad;
 
-		// Get address to interrupt handlers chain
-		mov esi, offset handlers_chain;
-	handlerLookup:
-		// Load address of interrupt handler
-		mov edi, [esi];
-		lea esi, [esi + 4];
-		// If NULL - end of chain, go to system handler
-		test edi, edi;
-		jz unhandledExc;
-		
 		// Get fault address
 		lea eax, [esp + 0x24];
 		// Push pointer to stored context
@@ -61,11 +51,12 @@ __declspec(naked) HookRoutine() {
 		// Push fault address
 		push eax;
 		// Call handler
-		call edi;
-		
+		mov esi, offset HandleUndefInstruction;
+		call esi;
+
 		// If handler refuses to handle exception: try next
 		test eax, eax;
-		jz handlerLookup;
+		jz unhandledExc;
 
 		// If exception is handled:
 		// Restore context and return from interrupt
@@ -73,6 +64,7 @@ __declspec(naked) HookRoutine() {
 		popfd;
 		iretd;
 	unhandledExc:
+		// If exception isn't handled:
 		// Jumping to system handler
 		popad
 		popfd

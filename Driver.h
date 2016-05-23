@@ -51,11 +51,8 @@ extern void setRegValue(
 	unsigned int value,
 	CALLER_CONTEXT* context);
 
-/***** Handlers.c *****/
+/*** Handlers.c ***/
 
-typedef int(__stdcall *InstructionHandler)(char**, CALLER_CONTEXT*);
-#define EMULATOR_ROUTINE(name) int __stdcall name (char** instruction, CALLER_CONTEXT* context)
-
-extern InstructionHandler handlers_chain[];
+extern int __stdcall HandleUndefInstruction(char** instruction, CALLER_CONTEXT* context);
 
 #pragma pack(pop)

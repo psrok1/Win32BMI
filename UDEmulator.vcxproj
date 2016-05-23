@@ -169,6 +169,7 @@
   <ItemGroup>
     <ClInclude Include="Consts.h" />
     <ClInclude Include="Driver.h" />
+    <ClInclude Include="Emulators.h" />
     <ClInclude Include="Parser.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
