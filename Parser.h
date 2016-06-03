@@ -21,6 +21,8 @@ typedef struct {
 	} mem;
 } ParsedInstruction;
 
+extern int decodeInstructionType(char* instruction, int prefixOffset, ParsedInstruction* instr_args);
+
 extern ParsedInstruction parse(char* instruction);
 
 extern void* getEffectiveVA(
