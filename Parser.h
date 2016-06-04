@@ -21,7 +21,17 @@ typedef struct {
 	} mem;
 } ParsedInstruction;
 
+extern int getPrefix(ParsedInstruction *instruction);
+
 extern int decodeInstructionType(char* instruction, int prefixOffset, ParsedInstruction* instr_args);
+
+extern void decodeAndn(char* instruction, int offset, ParsedInstruction* instr_args);
+
+extern void decodeBextr(char* instruction, int offset, ParsedInstruction* instr_args);
+
+extern void decodeBlsX(char* instruction, int offset, ParsedInstruction* instr_args);
+
+extern void decodeXcnt(char* instruction, int offset, int op16bit, ParsedInstruction* instr_args);
 
 extern ParsedInstruction parse(char* instruction);
 

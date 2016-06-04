@@ -106,44 +106,319 @@ int decodeInstructionType(char* instruction, int prefixOffset, ParsedInstruction
 	return 0;
 }
 
-void decodeOperands(char* instruction, int offset, int op16bit, ParsedInstruction* instr_args)
+void decodeAndn(char* instruction, int offset, ParsedInstruction* instr_args)
 {
-	unsigned char mod = instruction[offset]>>6;
+	unsigned char mod = instruction[offset] >> 6;
 	unsigned char reg = (instruction[offset] & 0b00111000) >> 3;
 	unsigned char rm = instruction[offset] & 0x07;
 	unsigned char vvvv = (~(instruction[offset - 1]) >> 3) & 0b00001111;
 
-	if (instr_args->type == INSTR_POPCNT || instr_args->type == INSTR_LZCNT || instr_args->type == INSTR_TZCNT || instr_args->type == INSTR_BEXTR || instr_args == INSTR_ANDN)
+	instr_args->dest = reg;
+	instr_args->src1 = vvvv;
+
+	//second src is register
+	if (mod == 3)
 	{
-		if (op16bit)
-			instr_args->dest = reg & 0x10;
+		instr_args->src2 = rm;
+		instr_args->length = offset;
+		return;
+	}
+	//second src is memory
+	instr_args->src2 = MEM_32;
+	//check the SIB byte
+	if (rm == 5)
+	{
+		++offset;
+		unsigned char ss = instruction[offset] >> 6;
+		unsigned char index = (instruction[offset] & 0b00111000) >> 3;
+		unsigned char base = instruction[offset] & 0x07;
+		instr_args->mem.scale = pow(2, ss);
+		if (index != 5)
+			instr_args->mem.index = index;
 		else
-			instr_args->dest = reg;
+			instr_args->mem.index = UNDEF;
+		if (base == 5 && mod == 0)
+			instr_args->mem.base = UNDEF;
+		else
+			instr_args->mem.base = base;
+	}
+	//32 bit displacement
+	if (mod == 2)
+	{
+		instr_args->mem.disp = *((int*)instruction[offset+1]);
+		if(rm!=5)
+			instr_args->mem.index = rm;
+		instr_args->length = offset + 4;
+		return;
+	}
+	//8 bit displacement
+	else if (mod == 1)
+	{
+		instr_args->mem.disp = instruction[offset+1];
+		if (rm != 5)
+			instr_args->mem.index = rm;
+		instr_args->length = offset + 1;
+		return;
 	}
 	else
 	{
-		instr_args->dest = vvvv;
+		//32 bit displacement without index
+		if (rm == 6)
+		{
+			instr_args->mem.index = UNDEF;
+			instr_args->mem.disp = *((int*)instruction[offset+1]);
+			instr_args->length = offset + 4;
+			return;
+		}
+		else
+		{
+			if (rm != 5)
+				instr_args->mem.index = rm;
+			instr_args->length = offset;
+			return;
+		}
 	}
+}
 
-	if (instr_args->type == INSTR_ANDN)
-		instr_args->src1 = vvvv;
-	else if (mod == 3)
+void decodeBextr(char* instruction, int offset, ParsedInstruction* instr_args)
+{
+	unsigned char mod = instruction[offset] >> 6;
+	unsigned char reg = (instruction[offset] & 0b00111000) >> 3;
+	unsigned char rm = instruction[offset] & 0x07;
+	unsigned char vvvv = (~(instruction[offset - 1]) >> 3) & 0b00001111;
+
+	instr_args->dest = reg;
+	instr_args->src2 = vvvv;
+
+	//first src is register
+	if (mod == 3)
+	{
+		instr_args->src1 = rm;
+		instr_args->length = offset;
+		return;
+	}
+	//first src is memory
+	instr_args->src1 = MEM_32;
+	//check the SIB byte
+	if (rm == 5)
+	{
+		++offset;
+		unsigned char ss = instruction[offset] >> 6;
+		unsigned char index = (instruction[offset] & 0b00111000) >> 3;
+		unsigned char base = instruction[offset] & 0x07;
+		instr_args->mem.scale = pow(2, ss);
+		if (index != 5)
+			instr_args->mem.index = index;
+		else
+			instr_args->mem.index = UNDEF;
+		if (base == 5 && mod == 0)
+			instr_args->mem.base = UNDEF;
+		else
+			instr_args->mem.base = base;
+	}
+	//32 bit displacement
+	if (mod == 2)
+	{
+		instr_args->mem.disp = *((int*)instruction[offset+1]);
+		if (rm != 5)
+			instr_args->mem.index = rm;
+		instr_args->length = offset + 4;
+		return;
+	}
+	//8 bit displacement
+	else if (mod == 1)
+	{
+		instr_args->mem.disp = instruction[offset+1];
+		if (rm != 5)
+			instr_args->mem.index = rm;
+		instr_args->length = offset + 1;
+		return;
+	}
+	else
+	{
+		//32 bit displacement without index
+		if (rm == 6)
+		{
+			instr_args->mem.index = UNDEF;
+			instr_args->mem.disp = *((int*)instruction[offset+1]);
+			instr_args->length = offset + 4;
+			return;
+		}
+		else
+		{
+			if (rm != 5)
+				instr_args->mem.index = rm;
+			instr_args->length = offset;
+			return;
+		}
+	}
+}
+
+void decodeBlsX(char* instruction, int offset, ParsedInstruction* instr_args)
+{
+	unsigned char mod = instruction[offset] >> 6;
+	unsigned char rm = instruction[offset] & 0x07;
+	unsigned char vvvv = (~(instruction[offset - 1]) >> 3) & 0b00001111;
+
+	instr_args->dest = vvvv;
+
+	//first src is register
+	if (mod == 3)
+	{
+		instr_args->src1 = rm;
+		instr_args->length = offset;
+		return;
+	}
+	//first src is memory
+	instr_args->src1 = MEM_32;
+	//check the SIB byte
+	if (rm == 5)
+	{
+		++offset;
+		unsigned char ss = instruction[offset] >> 6;
+		unsigned char index = (instruction[offset] & 0b00111000) >> 3;
+		unsigned char base = instruction[offset] & 0x07;
+		instr_args->mem.scale = pow(2, ss);
+		if (index != 5)
+			instr_args->mem.index = index;
+		else
+			instr_args->mem.index = UNDEF;
+		if (base == 5 && mod == 0)
+			instr_args->mem.base = UNDEF;
+		else
+			instr_args->mem.base = base;
+	}
+	//32 bit displacement
+	if (mod == 2)
+	{
+		instr_args->mem.disp = *((int*)instruction[offset+1]);
+		if (rm != 5)
+			instr_args->mem.index = rm;
+		instr_args->length = offset + 4;
+		return;
+	}
+	//8 bit displacement
+	else if (mod == 1)
+	{
+		instr_args->mem.disp = instruction[offset+1];
+		if (rm != 5)
+			instr_args->mem.index = rm;
+		instr_args->length = offset + 1;
+		return;
+	}
+	else
+	{
+		//32 bit displacement without index
+		if (rm == 6)
+		{
+			instr_args->mem.index = UNDEF;
+			instr_args->mem.disp = *((int*)instruction[offset+1]);
+			instr_args->length = offset + 4;
+			return;
+		}
+		else
+		{
+			if (rm != 5)
+				instr_args->mem.index = rm;
+			instr_args->length = offset;
+			return;
+		}
+	}
+}
+
+void decodeXcnt(char* instruction, int offset, int op16bit, ParsedInstruction* instr_args)
+{
+	unsigned char mod = instruction[offset] >> 6;
+	unsigned char reg = (instruction[offset] & 0b00111000) >> 3;
+	unsigned char rm = instruction[offset] & 0x07;
+
+	//adjust the length of registers
+	if (op16bit)
+	{
+		instr_args->src1 = MEM_16;
+		reg |= 0x10;
+	}
+	else
+		instr_args->src1 = MEM_32;
+
+	instr_args->dest = reg;
+
+	//first src is register
+	if (mod == 3)
 	{
 		if (op16bit)
-			instr_args->src1 = rm & 0x10;
+			instr_args->src1 = rm | 0x10;
 		else
 			instr_args->src1 = rm;
+		instr_args->length = offset;
+		return;
 	}
 
-	//TBC - pewnie skonczy sie na refaktoryzacji do postaci funkcji dekodujacych operandy dla kazdej instrukcji oddzielnie
+	//check the SIB byte
+	if (rm == 5)
+	{
+		++offset;
+		unsigned char ss = instruction[offset] >> 6;
+		unsigned char index = (instruction[offset] & 0b00111000) >> 3;
+		unsigned char base = instruction[offset] & 0x07;
+		instr_args->mem.scale = pow(2, ss);
+		if (index != 5)
+			instr_args->mem.index = index;
+		else
+			instr_args->mem.index = UNDEF;
+		if (base == 5 && mod == 0)
+			instr_args->mem.base = UNDEF;
+		else
+			instr_args->mem.base = base;
+	}
+	//32 bit displacement
+	if (mod == 2)
+	{
+		instr_args->mem.disp = *((int*)instruction[offset+1]);
+		if (rm != 5)
+			instr_args->mem.index = rm;
+		instr_args->length = offset + 4;
+		return;
+	}
+	//8 bit displacement
+	else if (mod == 1)
+	{
+		instr_args->mem.disp = instruction[offset+1];
+		if (rm != 5)
+			instr_args->mem.index = rm;
+		instr_args->length = offset + 1;
+		return;
+	}
+	else
+	{
+		//32 bit displacement without index
+		if (rm == 6)
+		{
+			instr_args->mem.index = UNDEF;
+			instr_args->mem.disp = *((int*)instruction[offset+1]);
+			instr_args->length = offset + 4;
+			return;
+		}
+		else
+		{
+			if (rm != 5)
+				instr_args->mem.index = rm;
+			instr_args->length = offset;
+			return;
+		}
+	}
 }
 
 ParsedInstruction parse(char* instruction)
 {
 	ParsedInstruction instr_args;
+	instr_args.mem.base = UNDEF;
+	instr_args.mem.disp = 0;
+	instr_args.mem.index = UNDEF;
+	instr_args.mem.scale = 1;
 	int prefixOffset = 0, length = 0;
 
-	prefixOffset = getPrefixes(instruction);
+	prefixOffset = getPrefix(instruction);
 
 	length += prefixOffset;
 
@@ -152,13 +427,26 @@ ParsedInstruction parse(char* instruction)
 	if (instr_args.type==INSTR_UNKNOWN)
 		return instr_args;
 
-	decodeOperands(instruction, length, prefixOffset, &instr_args);
+	switch (instr_args.type)
+	{
+	case INSTR_ANDN: decodeAndn(instruction, length, &instr_args); break;
+	case INSTR_BEXTR: decodeBextr(instruction, length, &instr_args); break;
+	case INSTR_BLSI: decodeBlsX(instruction, length, &instr_args); break;
+	case INSTR_BLSMSK: decodeBlsX(instruction, length, &instr_args); break;
+	case INSTR_BLSR: decodeBlsX(instruction, length, &instr_args); break;
+	case INSTR_LZCNT: decodeXcnt(instruction, length, prefixOffset, &instr_args); break;
+	case INSTR_POPCNT: decodeXcnt(instruction, length, prefixOffset, &instr_args); break;
+	case INSTR_TZCNT: decodeXcnt(instruction, length, prefixOffset, &instr_args); break;
+	}
+
 
 	return instr_args;
 }
 
 void* getEffectiveVA(struct MemoryArgument mem, CALLER_CONTEXT* context) {
-	UNREFERENCED_PARAMETER(mem);
-	UNREFERENCED_PARAMETER(context);
-	return NULL;
+	int index = mem.index != UNDEF ? getRegValue(mem.index, context) : 0;
+	int scale = mem.scale;
+	int base = mem.base != UNDEF ? getRegValue(mem.base, context) : 0;
+	int disp = mem.disp;
+	return index*scale + base + disp;
 }
