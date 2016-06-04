@@ -8,7 +8,7 @@ int __stdcall BLSIInstructionEmulator(
 	UNREFERENCED_PARAMETER(instruction);
 	UNREFERENCED_PARAMETER(context);
 
-	unsigned int src;
+	int src;
 	if (instruction.src1 == MEM_32)
 	{
 		src = *(unsigned int*)getEffectiveVA(instruction.mem, context);
@@ -20,7 +20,7 @@ int __stdcall BLSIInstructionEmulator(
 
 	unsigned int operand_size = 32;
 
-	unsigned int dest = (-src) & src;
+	int dest = -src & src;
 
 	// Set flags
 	context->flags &= (~FLAG_ZF) & (~FLAG_SF) & (~FLAG_CF) & (~FLAG_OF);

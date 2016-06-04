@@ -25,8 +25,8 @@ int __stdcall LZCNTInstructionEmulator(
 		operand_size = 16;
 	}
 
-	unsigned int temp = operand_size - 1;
-	unsigned int dest = 0;
+	int temp = operand_size - 1;
+	int dest = 0;
 
 	while ((temp >= 0) && (src >> temp == 0))
 	{
@@ -36,7 +36,7 @@ int __stdcall LZCNTInstructionEmulator(
 
 	// Set flags
 	context->flags &= (~FLAG_ZF) & (~FLAG_CF);
-	if (dest == operand_size)
+	if (dest == (int)operand_size)
 	{
 		context->flags |= FLAG_CF;
 	}
