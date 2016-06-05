@@ -87,7 +87,7 @@ int main()
 		mov eax, 0xCC88CC88
 		mov edx, 0xFFFF			// from 24 to 31
 		mov ecx, 0xFFFFFFFF
-		bextr ecx, eax, edx		// ecx = 0x0
+		bextr ecx, eax, edx		// ecx = 0x0 (?!!!)
 	}
 	_asm {
 		int 3h
@@ -125,7 +125,7 @@ int main()
 	////////////////////////////////////////////////// BLSMSK
 	_asm {
 		mov eax, 0xF0F0F0A8
-		blsmsk ecx, eax	   	   // ecx = 0xF0F0F0AF
+		blsmsk ecx, eax	   	   // ecx = 0x0000000F
 	}
 	_asm {
 		int 3h
@@ -137,7 +137,7 @@ int main()
 	};
 	_asm {
 		mov eax, 0xF0E00000
-		blsmsk ecx, eax	   	   // ecx = 0xF0FFFFFF
+		blsmsk ecx, eax	   	   // ecx = 0x003FFFFF
 	}
 	_asm {
 		int 3h
