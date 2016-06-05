@@ -169,7 +169,7 @@ void decodeInstruction(unsigned char* instruction, int offset, int op16bit, Pars
 	//32 bit displacement
 	if (mod == 2)
 	{
-		instr_args->mem.disp = *((int*)instruction[offset + 1]);
+		instr_args->mem.disp = *((int*)(&(instruction[offset + 1])));
 		if (rm != 4)
 			instr_args->mem.index = rm;
 		instr_args->length = offset + 5;
@@ -190,7 +190,7 @@ void decodeInstruction(unsigned char* instruction, int offset, int op16bit, Pars
 		if (rm == 5)
 		{
 			instr_args->mem.index = UNDEF;
-			instr_args->mem.disp = *((int*)instruction[offset + 1]);
+			instr_args->mem.disp = *((int*)(&(instruction[offset + 1])));
 			instr_args->length = offset + 5;
 			return;
 		}
