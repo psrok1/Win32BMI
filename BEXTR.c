@@ -23,12 +23,20 @@ int __stdcall BEXTRInstructionEmulator(
 	unsigned int start = src2 & 0xFF;
 	unsigned int len = (src2 & 0xFF00) >> 8;
 
-	if (start >= 32)
-		start = 0;
-	if (len >= 32)
-		len = 0;
+	unsigned int s_field;
+	unsigned int l_field;
 
-	unsigned int dest = (src1 >> start) & ((1 << len) - 1);
+	if (start >= 32)
+		s_field = 0;
+	else
+		s_field = (src1 >> start);
+
+	if (len >= 32)
+		l_field = 0;
+	else
+		l_field = (1 << len);
+
+	unsigned int dest = s_field & (l_field - 1);
 
 	// Set flags
 	context->flags &= (~FLAG_ZF) & (~FLAG_CF) & (~FLAG_OF);

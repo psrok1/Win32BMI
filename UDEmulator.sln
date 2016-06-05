@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UDEmulator", "UDEmulator.vc
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UDTest", "UDTest\UDTest.vcxproj", "{8931079B-57DA-4CAF-BA3D-9B64E0898522}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UDMachineTester", "UDMachineTester\UDMachineTester.vcxproj", "{9B074301-533B-4CC8-8EF2-05697FDD1B8F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM = Debug|ARM
@@ -55,6 +57,18 @@ Global
 		{8931079B-57DA-4CAF-BA3D-9B64E0898522}.Release|x64.Build.0 = Release|x64
 		{8931079B-57DA-4CAF-BA3D-9B64E0898522}.Release|x86.ActiveCfg = Release|Win32
 		{8931079B-57DA-4CAF-BA3D-9B64E0898522}.Release|x86.Build.0 = Release|Win32
+		{9B074301-533B-4CC8-8EF2-05697FDD1B8F}.Debug|ARM.ActiveCfg = Debug|Win32
+		{9B074301-533B-4CC8-8EF2-05697FDD1B8F}.Debug|ARM64.ActiveCfg = Debug|Win32
+		{9B074301-533B-4CC8-8EF2-05697FDD1B8F}.Debug|x64.ActiveCfg = Debug|x64
+		{9B074301-533B-4CC8-8EF2-05697FDD1B8F}.Debug|x64.Build.0 = Debug|x64
+		{9B074301-533B-4CC8-8EF2-05697FDD1B8F}.Debug|x86.ActiveCfg = Debug|Win32
+		{9B074301-533B-4CC8-8EF2-05697FDD1B8F}.Debug|x86.Build.0 = Debug|Win32
+		{9B074301-533B-4CC8-8EF2-05697FDD1B8F}.Release|ARM.ActiveCfg = Release|Win32
+		{9B074301-533B-4CC8-8EF2-05697FDD1B8F}.Release|ARM64.ActiveCfg = Release|Win32
+		{9B074301-533B-4CC8-8EF2-05697FDD1B8F}.Release|x64.ActiveCfg = Release|x64
+		{9B074301-533B-4CC8-8EF2-05697FDD1B8F}.Release|x64.Build.0 = Release|x64
+		{9B074301-533B-4CC8-8EF2-05697FDD1B8F}.Release|x86.ActiveCfg = Release|Win32
+		{9B074301-533B-4CC8-8EF2-05697FDD1B8F}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
