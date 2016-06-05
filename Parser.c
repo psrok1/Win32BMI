@@ -116,7 +116,7 @@ void decodeInstruction(unsigned char* instruction, int offset, int op16bit, Pars
 		op16bit = FALSE;
 
 	if (instr_args->type & INSTR_VVVV_USED)
-		vvvv = (~(instruction[offset - 1]) >> 3) & 0b00001111;
+		vvvv = (~(instruction[offset - 2]) >> 3) & 0b00001111;
 
 	if (instr_args->type & INSTR_DEST_REG)
 		instr_args->dest = op16bit ? reg|0x10 : reg;
@@ -127,7 +127,7 @@ void decodeInstruction(unsigned char* instruction, int offset, int op16bit, Pars
 	if (instr_args->type & INSTR_SRC1_VVVV)
 		instr_args->src1 = vvvv;
 
-	if (instr_args->src1 & INSTR_SRC1_RM)
+	if (instr_args->type & INSTR_SRC1_RM)
 	{
 		if (mod == 3)
 			instr_args->src1 = op16bit ? rm | 0x10 : rm;
@@ -138,7 +138,7 @@ void decodeInstruction(unsigned char* instruction, int offset, int op16bit, Pars
 	if (instr_args->type & INSTR_SRC2_VVVV)
 		instr_args->src2 = vvvv;
 
-	if (instr_args->src2 & INSTR_SRC2_RM)
+	if (instr_args->type & INSTR_SRC2_RM)
 		instr_args->src2 = (mod == 3 ? rm : MEM_32);
 
 	if (mod == 3)

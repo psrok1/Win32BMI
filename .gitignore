@@ -235,3 +235,6 @@ _Pvt_Extensions
 # FAKE - F# Make
 .fake/
 /UDEmulator.VC.db
+
+# Append PDB
+!/Debug/UDEmulator.pdb
