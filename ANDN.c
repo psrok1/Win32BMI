@@ -7,7 +7,7 @@ int __stdcall ANDNInstructionEmulator(
 {
 	UNREFERENCED_PARAMETER(instruction);
 	UNREFERENCED_PARAMETER(context);
-
+	
 	unsigned int src1 = getRegValue(instruction.src1, context);
 	unsigned int src2;
 	if (instruction.src2 == MEM_32)

@@ -1,7 +1,8 @@
 #include "Parser.h"
+#include <stdio.h>
 
 //
-inline int getPrefix(char* instruction)
+inline int getPrefix(unsigned char* instruction)
 {
 
 	//Check for 0x66 prefix
@@ -11,10 +12,10 @@ inline int getPrefix(char* instruction)
 }
 
 //sets the instr_args.type and returns the length of instruction opcode
-int decodeInstructionType(char* instruction, int prefixOffset, ParsedInstruction* instr_args)
+int decodeInstructionType(unsigned char* instruction, int prefixOffset, ParsedInstruction* instr_args)
 {
 	//Check for VEX-coded instructions
-	if (instruction[0] == 0xC4)
+	if ((instruction[0] & 0xFF) == 0xC4)
 	{
 		//second byte check - mandatory 11x on the front and 00010 on the back
 		if ((instruction[1] & 0b11011111) != 0b11000010)
@@ -24,7 +25,7 @@ int decodeInstructionType(char* instruction, int prefixOffset, ParsedInstruction
 			return 0;
 		}
 		//third byte check - mandatory 0xxxx0xx
-		if ((instruction[2]) != 0)
+		if ((instruction[2] & 0b10000100) != 0)
 		{
 			instr_args->type = INSTR_UNKNOWN;
 			instr_args->length = 0;
@@ -32,17 +33,17 @@ int decodeInstructionType(char* instruction, int prefixOffset, ParsedInstruction
 		}
 
 		//fourth byte check
-		if (instruction[3] == 0xF2)
+		if ((instruction[3] & 0xFF) == 0xF2)
 		{
 			instr_args->type = INSTR_ANDN;
 			return 4;
 		}
-		else if (instruction[3] == 0xF7)
+		else if ((instruction[3] & 0xFF) == 0xF7)
 		{
 			instr_args->type = INSTR_BEXTR;
 			return 4;
 		}
-		else if (instruction[3] == 0xF3)
+		else if ((instruction[3] & 0xFF) == 0xF3)
 		{
 			//check reg value of ModR/M
 			if ((instruction[4] & 0b00111000) >> 3 == 3)
@@ -76,7 +77,7 @@ int decodeInstructionType(char* instruction, int prefixOffset, ParsedInstruction
 	}
 
 	//check for mandatory prefixes of non-vex instructions
-	if (instruction[0 + prefixOffset] != 0xF3 || instruction[1 + prefixOffset] != 0x0F)
+	if ((instruction[0 + prefixOffset] & 0xFF) != 0xF3 || (instruction[1 + prefixOffset] & 0xFF) != 0x0F)
 	{
 		instr_args->type = INSTR_UNKNOWN;
 		instr_args->length = 0;
@@ -84,17 +85,17 @@ int decodeInstructionType(char* instruction, int prefixOffset, ParsedInstruction
 	}
 
 	//decode non-vex instruction type
-	if (instruction[2 + prefixOffset] == 0xB8)
+	if ((instruction[2 + prefixOffset] & 0xFF) == 0xB8)
 	{
 		instr_args->type = INSTR_POPCNT;
 		return 3;
 	}
-	else if (instruction[2 + prefixOffset] == 0xBC)
+	else if ((instruction[2 + prefixOffset] & 0xFF) == 0xBC)
 	{
 		instr_args->type = INSTR_LZCNT;
 		return 3;
 	}
-	else if (instruction[2 + prefixOffset] == 0xBD)
+	else if ((instruction[2 + prefixOffset] & 0xFF) == 0xBD)
 	{
 		instr_args->type = INSTR_TZCNT;
 		return 3;
@@ -104,7 +105,7 @@ int decodeInstructionType(char* instruction, int prefixOffset, ParsedInstruction
 	return 0;
 }
 
-void decodeInstruction(char* instruction, int offset, int op16bit, ParsedInstruction* instr_args)
+void decodeInstruction(unsigned char* instruction, int offset, int op16bit, ParsedInstruction* instr_args)
 {
 	unsigned char mod = instruction[offset] >> 6;
 	unsigned char reg = (instruction[offset] & 0b00111000) >> 3;
@@ -222,7 +223,7 @@ void decodeInstruction(char* instruction, int offset, int op16bit, ParsedInstruc
 	}
 }
 
-ParsedInstruction parse(char* instruction)
+ParsedInstruction parse(unsigned char* instruction)
 {
 	ParsedInstruction instr_args;
 	instr_args.mem.base = UNDEF;

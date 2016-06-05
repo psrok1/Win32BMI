@@ -21,7 +21,7 @@ typedef struct {
 	} mem;
 } ParsedInstruction;
 
-extern ParsedInstruction parse(char* instruction);
+extern ParsedInstruction parse(unsigned char* instruction);
 
 extern void* getEffectiveVA(
 	struct MemoryArgument mem,

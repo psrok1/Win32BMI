@@ -53,6 +53,6 @@ extern void setRegValue(
 
 /*** Handlers.c ***/
 
-extern int __stdcall HandleUndefInstruction(char** instruction, CALLER_CONTEXT* context);
+extern int __stdcall HandleUndefInstruction(unsigned char** instruction, CALLER_CONTEXT* context);
 
 #pragma pack(pop)

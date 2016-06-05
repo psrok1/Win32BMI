@@ -4,8 +4,10 @@
 
 /* Main instruction handler */
 
-int __stdcall HandleUndefInstruction(char** instruction, CALLER_CONTEXT* context)
+int __stdcall HandleUndefInstruction(unsigned char** instruction, CALLER_CONTEXT* context)
 {
+	UNREFERENCED_PARAMETER(instruction);
+	UNREFERENCED_PARAMETER(context);
 	ParsedInstruction parsedInstruction = parse(*instruction);
 	EmulatorRoutine routine;
 	// Choose routine depending on the instruction type returned by parser
