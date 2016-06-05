@@ -28,7 +28,7 @@ int __stdcall LZCNTInstructionEmulator(
 	int temp = operand_size - 1;
 	int dest = 0;
 
-	while ((temp >= 0) && (src >> temp == 0))
+	while ((temp >= 0) && (((src >> temp) & 1) == 0))
 	{
 		--temp;
 		++dest;
