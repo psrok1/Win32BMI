@@ -119,7 +119,7 @@ void decodeInstruction(unsigned char* instruction, int offset, int op16bit, Pars
 		vvvv = (~(instruction[offset - 1]) >> 3) & 0b00001111;
 
 	if (instr_args->type & INSTR_DEST_REG)
-		instr_args->dest = reg;
+		instr_args->dest = op16bit ? reg|0x10 : reg;
 
 	if (instr_args->type & INSTR_DEST_VVVV)
 		instr_args->dest = vvvv;
@@ -129,45 +129,26 @@ void decodeInstruction(unsigned char* instruction, int offset, int op16bit, Pars
 
 	if (instr_args->src1 & INSTR_SRC1_RM)
 	{
-		if (op16bit)
-		{
-			instr_args->src1 = MEM_16;
-			reg |= 0x10;
-		}
-		else
-			instr_args->src1 = MEM_32;
-
-		//first src is register
 		if (mod == 3)
-		{
-			if (op16bit)
-				instr_args->src1 = rm | 0x10;
-			else
-				instr_args->src1 = rm;
-			instr_args->length = offset;
-			return;
-		}
+			instr_args->src1 = op16bit ? rm | 0x10 : rm;
+		else
+			instr_args->src1 = op16bit ? MEM_16 : MEM_32;
 	}
 
 	if (instr_args->type & INSTR_SRC2_VVVV)
 		instr_args->src2 = vvvv;
 
 	if (instr_args->src2 & INSTR_SRC2_RM)
+		instr_args->src2 = (mod == 3 ? rm : MEM_32);
+
+	if (mod == 3)
 	{
-		//second src is memory
-		instr_args->src2 = MEM_32;
-
-		//second src is register
-		if (mod == 3)
-		{
-			instr_args->src2 = rm;
-			instr_args->length = offset;
-			return;
-		}
+		instr_args->length = offset + 1;
+		return;
 	}
-
+	// MOD = 0,1,2
 	//check the SIB byte
-	if (rm == 5)
+	if (rm == 4)
 	{
 		++offset;
 		unsigned char ss = instruction[offset] >> 6;
@@ -189,34 +170,33 @@ void decodeInstruction(unsigned char* instruction, int offset, int op16bit, Pars
 	if (mod == 2)
 	{
 		instr_args->mem.disp = *((int*)instruction[offset + 1]);
-		if (rm != 5)
+		if (rm != 4)
 			instr_args->mem.index = rm;
-		instr_args->length = offset + 4;
+		instr_args->length = offset + 5;
 		return;
 	}
 	//8 bit displacement
 	else if (mod == 1)
 	{
 		instr_args->mem.disp = instruction[offset + 1];
-		if (rm != 5)
+		if (rm != 4)
 			instr_args->mem.index = rm;
-		instr_args->length = offset + 1;
+		instr_args->length = offset + 2;
 		return;
 	}
-	else
+	else // MOD == 0
 	{
-		//32 bit displacement without index
-		if (rm == 6)
+		//32 bit displacement-only
+		if (rm == 5)
 		{
 			instr_args->mem.index = UNDEF;
 			instr_args->mem.disp = *((int*)instruction[offset + 1]);
-			instr_args->length = offset + 4;
+			instr_args->length = offset + 5;
 			return;
 		}
 		else
 		{
-			if (rm != 5)
-				instr_args->mem.index = rm;
+			instr_args->mem.index = rm;
 			instr_args->length = offset;
 			return;
 		}
