@@ -24,7 +24,7 @@ int __stdcall BLSIInstructionEmulator(
 
 	// Set flags
 	context->flags &= (~FLAG_ZF) & (~FLAG_SF) & (~FLAG_CF) & (~FLAG_OF);
-	if (src == 0)
+	if (src != 0)
 	{
 		context->flags |= FLAG_CF;
 	}
