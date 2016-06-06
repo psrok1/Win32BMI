@@ -39,6 +39,9 @@ typedef struct
 	UINT32 edx;
 	UINT32 ecx;
 	UINT32 eax;
+	UINT32 pseudoflags;
+	UINT32 eip;
+	UINT32 cs;
 	UINT32 flags;
 } CALLER_CONTEXT;
 
